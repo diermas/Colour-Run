@@ -11,7 +11,7 @@ import javax.sound.sampled.FloatControl;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-public class GameMain extends PApplet{
+public class ColourRun extends PApplet{
 	
 	public Player player1;	
 	public Barrier[] barriers;
@@ -26,7 +26,7 @@ public class GameMain extends PApplet{
 	public Clip jumpClip;
 	
 	public static void main(String[] args) {
-		PApplet.main("GameMain");
+		PApplet.main("ColourRun");
 	}
 	
 	public void settings() {
