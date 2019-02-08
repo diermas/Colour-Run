@@ -64,7 +64,7 @@ public class ColourRun extends PApplet{
 			text("COLOUR RUN!!!", 400, 70);
 			textSize(30);
 			text("Use the number keys 1-4 to change your colour", 250, 150);
-			text("Press Spacebar to jump, and Escape to pause/unpause", 200, 200);
+			text("Press Spacebar to toggle flight, and Escape to pause/unpause", 160, 200);
 			text("Match your colour to the wall to pass through", 275, 250);
 			fill(255);
 			rect(200,450,250,100);
@@ -115,6 +115,7 @@ public class ColourRun extends PApplet{
 				}
 				if (player1.checkCollision(barriers)) {
 					level = 2;
+					player1.reset();
 				}
 				for (int i = 0; i < barriers.length; i++) {
 					if (barriers[i].checkOffScreen()) {
@@ -190,10 +191,7 @@ public class ColourRun extends PApplet{
 			switch (key) {
 			case ' ':
 				if (!gamePaused) {
-					if (!player1.isJumping()) {
-						player1.jump();
-						playSound("data/JumpSound.wav");
-					}
+					player1.jump();
 				}
 				break;
 			case '1':
@@ -275,7 +273,6 @@ public class ColourRun extends PApplet{
 				FloatControl volume = (FloatControl) musicClip.getControl(FloatControl.Type.MASTER_GAIN);
 				volume.setValue(20f * (float) Math.log10(newVolume));
 				musicClip.start();
-				System.out.println("music:"+musicClip.getLevel());
 			}
 			
 		} catch (Exception e) {

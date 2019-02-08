@@ -6,28 +6,31 @@ public class Player extends PApplet{
 	private int y;
 	private int speedY;
 	private PApplet parent;
-	private boolean jumped;
 	private String type;
+	private boolean flying;
 	
 	public Player(PApplet parent, String type) {
 		x = 100;
 		y = 375;
-		speedY = 0;
 		this.parent = parent;
-		jumped = false;
 		this.type = type;
+		speedY = 0;
+		flying = false;
 	}
 	
 	public void move() {
 		y += speedY;
-		if (speedY < 0) {
-			speedY += 1;
-		} else if (y < 375) {
-			speedY += 1;
-		} else if (speedY > 0 && y >= 375) {
+		if (flying) {			
+			speedY--;
+		} else {
+			speedY++;
+		}
+		if (flying && y <= 160) {
+			speedY = 0;
+			y = 160;
+		} else if (!flying && y >= 375) {
 			speedY = 0;
 			y = 375;
-			jumped = false;
 		}
 	}
 	
@@ -59,8 +62,13 @@ public class Player extends PApplet{
 	}
 	
 	public void jump() {
-		speedY = -22;
-		jumped = true;
+		flying = !flying;
+		if (!flying) {
+			speedY = 15;
+		} else {
+			speedY = -15;
+		}
+		
 	}
 	
 	public boolean checkCollision(Barrier[] barriers) {
@@ -83,8 +91,10 @@ public class Player extends PApplet{
 		this.type = type;
 	}
 	
-	public boolean isJumping() {
-		return jumped;
+	public void reset() {
+		y = 375;
+		flying = false;
+		speedY = 0;
 	}
 	
 }
