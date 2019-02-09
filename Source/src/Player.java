@@ -1,4 +1,5 @@
 import processing.core.PApplet;
+import processing.core.PImage;
 
 public class Player extends PApplet{
 	
@@ -8,14 +9,22 @@ public class Player extends PApplet{
 	private PApplet parent;
 	private String type;
 	private boolean flying;
+	private PImage[][] spritesheet;
+	private int animCount;
+	private int animStep;
+	private PImage current;
 	
-	public Player(PApplet parent, String type) {
+	public Player(PApplet parent, String type, PImage[][] spritesheet) {
 		x = 100;
-		y = 375;
+		y = 317;
 		this.parent = parent;
 		this.type = type;
 		speedY = 0;
 		flying = false;
+		this.spritesheet = spritesheet;
+		animCount = 0;
+		animStep = 0;
+		current = spritesheet[0][0];
 	}
 	
 	public void move() {
@@ -25,35 +34,50 @@ public class Player extends PApplet{
 		} else {
 			speedY++;
 		}
-		if (flying && y <= 160) {
+		if (flying && y <= 90) {
 			speedY = 0;
-			y = 160;
-		} else if (!flying && y >= 375) {
+			y = 90;
+		} else if (!flying && y >= 317) {
 			speedY = 0;
-			y = 375;
+			y = 317;
+		}
+		if (animCount == 20) {
+			if (animStep == 3) {
+				animStep = 0;
+			} else {
+				animStep++;
+			}
+			animCount = 0;
+		} else {
+			animCount++;
 		}
 	}
 	
 	public void render() {
+		int typeIndex;
 		switch (type) {
 		case "fire":
-			parent.fill(255,0,0);
-			break;
-		case "lightning":
-			parent.fill(255,255,0);
-			break;
-		case "air":
-			parent.fill(255,0,255);
+			typeIndex = 0;
 			break;
 		case "earth":
-			parent.fill(0,255,0);
+			typeIndex = 1;
+			break;
+		case "air":
+			typeIndex = 2;
+			break;
+		case "lightning":
+			typeIndex = 3;
 			break;
 		default:
-			parent.fill(255,0,0);
+			typeIndex = 0;
 			break;
 		}
-		parent.stroke(0);
-		parent.ellipse(x,y,50,50);
+		if (!flying) {
+			current = spritesheet[typeIndex][animStep];
+		} else {
+			current = spritesheet[typeIndex][animStep+4];
+		}
+		parent.image(current, x, y);
 	}
 	
 	public void update() {
@@ -76,8 +100,8 @@ public class Player extends PApplet{
 			float barX = barriers[i].getX();
 			float barY = barriers[i].getY();
 			String barType = barriers[i].getType();
-			if (barX <= 100 && barX+50 >= 100) {
-				if (barY <= y-25 && barY+160 >= y+25) {
+			if (barX <= 170 && barX+70 >= 170) {
+				if (barY-3 <= y && barY+147 >= y+86) {
 					if (barType != type) {
 						return true;
 					}
@@ -92,7 +116,7 @@ public class Player extends PApplet{
 	}
 	
 	public void reset() {
-		y = 375;
+		y = 320;
 		flying = false;
 		speedY = 0;
 	}

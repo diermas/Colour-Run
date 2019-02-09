@@ -19,11 +19,11 @@ public class ColourRun extends PApplet{
 	public int score;
 	public int scoreCounter;
 	public boolean gamePaused;
-	public PImage walls;
+	public PImage texSheet;
 	public PImage[][] wallSheet;
+	public PImage[][] charSheet;
 	public int level;
 	public Clip musicClip;
-	public Clip jumpClip;
 	
 	public static void main(String[] args) {
 		PApplet.main("ColourRun");
@@ -36,14 +36,20 @@ public class ColourRun extends PApplet{
 	public void setup() {
 		playMusic("data/PimPoy.wav", (float) 0.2);
 		level = 0;
-		walls = loadImage("textures.png");
-		player1 = new Player(this, "fire");
-		wallSheet = new PImage[5][6];
+		texSheet = loadImage("spritesheet.png");
+		wallSheet = new PImage[5][4];
 		for (int i = 0; i < wallSheet.length; i++) {
 			for (int j = 0; j < wallSheet[i].length; j++) {
-				wallSheet[i][j] = walls.get(j*50, i*160, 50, 160);
+				wallSheet[i][j] = texSheet.get(j*53, i*147, 53, 147);
 			}
 		}
+		charSheet = new PImage[4][8];
+		for (int i = 0; i < charSheet.length; i++) {
+			for (int j = 0; j < charSheet[i].length; j++) {
+				charSheet[i][j] = texSheet.get(j*70, (i*86)+735, 70, 86);
+			}
+		}
+		player1 = new Player(this, "fire", charSheet);
 		score = 0;
 		scoreCounter = 0;
 		barriers = new Barrier[8];
@@ -55,16 +61,17 @@ public class ColourRun extends PApplet{
 	public void draw() {
 		switch (level) {
 		case 0:
-			background(66,229,244);
+			background(173, 159, 145);
 			stroke(0);
-			fill(36,242,104);
+			fill(91, 73, 55);
 			rect(0,400,width,height-400);
+			rect(0,0,width,93);
 			textSize(50);
 			fill(0);
 			text("COLOUR RUN!!!", 400, 70);
 			textSize(30);
 			text("Use the number keys 1-4 to change your colour", 250, 150);
-			text("Press Spacebar to toggle flight, and Escape to pause/unpause", 160, 200);
+			text("Press Spacebar to toggle gravity, and Escape to pause/unpause", 160, 200);
 			text("Match your colour to the wall to pass through", 275, 250);
 			fill(255);
 			rect(200,450,250,100);
@@ -75,30 +82,30 @@ public class ColourRun extends PApplet{
 			break;
 		case 1:
 			// Draw the background features and button highlights
-			background(66, 229, 244);
+			background(173, 159, 145);
 			textSize(32);
+			fill(91, 73, 55);
+			rect(0,400,width,height-400);
+			rect(0,0,width,93);
 			fill(0);
 			stroke(0);
 			text("Score: "+score, 50, 50);
-			fill(36, 242, 104);
-			rect(0,400,width,height-400);
-			fill(255,0,0);
+			fill(231,99,18);
 			rect(50, 450, 200, 100);
 			fill(0);
 			text("1", 140, 510);
-			fill(0,255,0);
+			fill(11,229,18);
 			rect(350, 450, 200, 100);
 			fill(0);
 			text("2", 440, 510);
-			fill(255,255,0);
+			fill(255,247,0);
 			rect(650, 450, 200, 100);
 			fill(0);
 			text("3", 740, 510);
-			fill(255,0,255);
+			fill(212,92,222);
 			rect(950, 450, 200, 100);
 			fill(0);
 			text("4", 1040, 510);
-			textSize(10);
 			
 			if (!gamePaused) {
 				player1.update();
@@ -135,11 +142,6 @@ public class ColourRun extends PApplet{
 				} else {
 					scoreCounter++;
 				}
-				if (jumpClip != null) {
-					if (!jumpClip.isRunning()) {
-						jumpClip.close();
-					}
-				}
 			} else {
 				player1.render();
 				for (int i = 0; i < barriers.length; i++) {
@@ -148,10 +150,11 @@ public class ColourRun extends PApplet{
 			}
 			break;
 		case 2:
-			background(66,229,244);
+			background(173, 159, 145);
 			stroke(0);
-			fill(36,242,104);
+			fill(91, 73, 55);
 			rect(0,400,width,height-400);
+			rect(0,0,width,93);
 			textSize(50);
 			fill(255,0,0);
 			text("GAME OVER", 450, 200);
@@ -244,20 +247,6 @@ public class ColourRun extends PApplet{
 		}
 	}
 	
-	public void playSound(String fileName) {
-		try (InputStream in = getClass().getResourceAsStream(fileName)){
-			InputStream bufferedIn = new BufferedInputStream(in);
-			try (AudioInputStream audioIn = AudioSystem.getAudioInputStream(bufferedIn)){
-				jumpClip = AudioSystem.getClip();
-				jumpClip.open(audioIn);
-				jumpClip.start();
-			}
-			
-		} catch (Exception e) {
-			
-		}
-	}
-	
 	// Code for volume taken from Stack Overflow https://stackoverflow.com/questions/40514910/set-volume-of-java-clip
 	public void playMusic(String fileName, float newVolume) {
 		if (musicClip != null) {
@@ -300,10 +289,10 @@ public class ColourRun extends PApplet{
 		for (int i = 0; i < barriers.length; i++) {
 			String type = randomType();
 			if (i % 2 == 0) {
-				barriers[i] = new Barrier(this, 1200+((i/2)*400), 240, type, wallSheet);
+				barriers[i] = new Barrier(this, 1200+((i/2)*400), 253, type, wallSheet);
 			} else {
 				String newType = randomType();
-				barriers[i] = new Barrier(this, 1200+(((i-1)/2)*400), 80, type, wallSheet);
+				barriers[i] = new Barrier(this, 1200+(((i-1)/2)*400), 93, type, wallSheet);
 				while(barriers[i-1].getType() == newType) {
 					newType = randomType();
 				}

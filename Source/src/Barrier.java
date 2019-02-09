@@ -27,8 +27,8 @@ public class Barrier extends PApplet{
 	
 	public void move() {
 		x += speedX;
-		if (animCount == 10) {
-			if (animStep == 5) {
+		if (animCount == 20) {
+			if (animStep == 1) {
 				animStep = 0;
 			} else {
 				animStep++;
@@ -58,7 +58,11 @@ public class Barrier extends PApplet{
 			typeIndex = 4;
 			break;
 		}
-		current = spritesheet[typeIndex][animStep];
+		if (y == 253) {
+			current = spritesheet[typeIndex][animStep];
+		} else {
+			current = spritesheet[typeIndex][animStep+2];
+		}
 		parent.image(current, x, y);
 	}
 	
