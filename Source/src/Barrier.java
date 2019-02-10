@@ -72,7 +72,7 @@ public class Barrier extends PApplet{
 	}
 	
 	public void speedUp() {
-		speedX *= 1.05;
+		speedX *= 1.03;
 	}
 	
 	public float getX() {

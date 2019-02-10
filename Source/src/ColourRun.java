@@ -34,6 +34,7 @@ public class ColourRun extends PApplet{
 	}
 	
 	public void setup() {
+		// Give all variables values as needed, and load the texture file into two separate arrays
 		playMusic("data/PimPoy.wav", (float) 0.2);
 		level = 0;
 		texSheet = loadImage("spritesheet.png");
@@ -61,6 +62,7 @@ public class ColourRun extends PApplet{
 	public void draw() {
 		switch (level) {
 		case 0:
+			// Display the Main Menu screen and buttons
 			background(173, 159, 145);
 			stroke(0);
 			fill(91, 73, 55);
@@ -74,11 +76,13 @@ public class ColourRun extends PApplet{
 			text("Press Spacebar to toggle gravity, and Escape to pause/unpause", 160, 200);
 			text("Match your colour to the wall to pass through", 275, 250);
 			fill(255);
-			rect(200,450,250,100);
-			rect(750,450,250,100);
+			rect(100,450,250,100);
+			rect(475,450,250,100);
+			rect(850,450,250,100);
 			fill(0);
-			text("Play", 290, 510);
-			text("Quit", 840, 510);
+			text("Play", 190, 510);
+			text("Credits", 550,510);
+			text("Quit", 940, 510);
 			break;
 		case 1:
 			// Draw the background features and button highlights
@@ -107,11 +111,13 @@ public class ColourRun extends PApplet{
 			fill(0);
 			text("4", 1040, 510);
 			
+			// Update all game entities if the game isn't paused, otherwise just render them
 			if (!gamePaused) {
 				player1.update();
 				for (int i = 0; i < barriers.length; i++) {
 					barriers[i].update();
 				}
+				// Slowly increment the speed of the walls every 100 ticks
 				if (counter == 100) {
 					for (int i = 0; i < barriers.length; i++) {
 						barriers[i].speedUp();
@@ -124,6 +130,7 @@ public class ColourRun extends PApplet{
 					level = 2;
 					player1.reset();
 				}
+				// If barriers move off screen, refresh them with a new type to the right
 				for (int i = 0; i < barriers.length; i++) {
 					if (barriers[i].checkOffScreen()) {
 						String newType = randomType();
@@ -150,6 +157,7 @@ public class ColourRun extends PApplet{
 			}
 			break;
 		case 2:
+			// Display the Game Over screen and menu
 			background(173, 159, 145);
 			stroke(0);
 			fill(91, 73, 55);
@@ -167,12 +175,31 @@ public class ColourRun extends PApplet{
 			text("Restart", 270, 510);
 			text("Quit", 840, 510);
 			break;
+		case 3:
+			background(173, 159, 145);
+			stroke(0);
+			fill(91, 73, 55);
+			rect(0,400,width,height-400);
+			rect(0,0,width,93);
+			textSize(50);
+			fill(0);
+			text("CREDITS", 525, 75);
+			textSize(30);
+			text("Title Audio: Pim Poy, DL Sounds, dl-sounds.com", 50, 150);
+			text("Game BGM: Platformer2, DL Sounds, dl-sounds.com", 50, 200);
+			text("Sprites used: Platformer Art Complete Pack, Kenney, kenney.nl", 50, 250);
+			fill(255);
+			rect(475,450,250,100);
+			fill(0);
+			text("Back", 565, 510);
+			break;
 		default:
 			break;
 		}
 		
 	}
 	
+	// Return a new random type when called
 	public String randomType() {
 		Random random = new Random();
 		int index = random.nextInt(5);
@@ -186,10 +213,13 @@ public class ColourRun extends PApplet{
 		}
 	}
 	
+	// 
 	public void keyPressed() {
+		// Reset ESC key to use as pause
 		if (key == ESC) {
 			key = '0';
 		}
+		// Only register keyboard controls if the game is being played
 		if (level == 1) {
 			switch (key) {
 			case ' ':
@@ -226,22 +256,30 @@ public class ColourRun extends PApplet{
 		}
 	}
 	
+	// Track mousePress events on the Main Menu and Game Over screens for button clicks
 	public void mousePressed() {
 		if (level == 0) {
 			if (mouseY > 450 && mouseY < 550) {
-				if (mouseX > 200 && mouseX < 450) {
+				if (mouseX > 100 && mouseX < 350) {
+					changeLevel(1);
+				} else if (mouseX > 850 && mouseX < 1100) {
+					exit();
+				} else if (mouseX > 475 && mouseX < 725) {
+					changeLevel(3);
+				}
+			}
+		} else if (level == 2) {
+			if (mouseY > 450 && mouseY < 550) {
+				if (mouseX > 100 && mouseX < 350) {
 					changeLevel(1);
 				} else if (mouseX > 750 && mouseX < 1000) {
 					exit();
 				}
 			}
-		}
-		if (level == 2) {
+		} else if (level == 3) {
 			if (mouseY > 450 && mouseY < 550) {
-				if (mouseX > 200 && mouseX < 450) {
-					changeLevel(1);
-				} else if (mouseX > 750 && mouseX < 1000) {
-					exit();
+				if (mouseX > 475 && mouseX < 725) {
+					changeLevel(0);
 				}
 			}
 		}
@@ -269,6 +307,7 @@ public class ColourRun extends PApplet{
 		}
 	}
 	
+	// Method to change the level value and play the appropriate music as needed
 	public void changeLevel(int level) {
 		this.level = level;
 		switch(level) {
@@ -284,6 +323,7 @@ public class ColourRun extends PApplet{
 		}
 	}
 	
+	// Method to generate new barriers, including the code that stops two black barriers spawning vertical
 	public void startLevel() {
 		score = 0;
 		for (int i = 0; i < barriers.length; i++) {

@@ -27,6 +27,7 @@ public class Player extends PApplet{
 		current = spritesheet[0][0];
 	}
 	
+	// Move and animate the player, keeping the player's y value locked at ground or ceiling level
 	public void move() {
 		y += speedY;
 		if (flying) {			
@@ -41,6 +42,7 @@ public class Player extends PApplet{
 			speedY = 0;
 			y = 317;
 		}
+		// Progress the animation every 20 frames
 		if (animCount == 20) {
 			if (animStep == 3) {
 				animStep = 0;
@@ -53,6 +55,7 @@ public class Player extends PApplet{
 		}
 	}
 	
+	// Identify which area of the spritesheet to render based on the type variable
 	public void render() {
 		int typeIndex;
 		switch (type) {
@@ -85,12 +88,13 @@ public class Player extends PApplet{
 		this.render();
 	}
 	
+	// Toggle gravity and set the initial fall speed
 	public void jump() {
 		flying = !flying;
 		if (!flying) {
-			speedY = 15;
+			speedY = 1;
 		} else {
-			speedY = -15;
+			speedY = -1;
 		}
 		
 	}
@@ -101,7 +105,7 @@ public class Player extends PApplet{
 			float barY = barriers[i].getY();
 			String barType = barriers[i].getType();
 			if (barX <= 170 && barX+70 >= 170) {
-				if (barY-3 <= y && barY+147 >= y+86) {
+				if (barY-3 <= y && barY+147 >= y+83) {
 					if (barType != type) {
 						return true;
 					}
@@ -116,7 +120,7 @@ public class Player extends PApplet{
 	}
 	
 	public void reset() {
-		y = 320;
+		y = 317;
 		flying = false;
 		speedY = 0;
 	}
