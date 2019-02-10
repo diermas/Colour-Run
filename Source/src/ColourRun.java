@@ -215,6 +215,7 @@ public class ColourRun extends PApplet{
 	
 	// 
 	public void keyPressed() {
+		System.out.println(key);
 		// Reset ESC key to use as pause
 		if (key == ESC) {
 			key = '0';
@@ -270,7 +271,7 @@ public class ColourRun extends PApplet{
 			}
 		} else if (level == 2) {
 			if (mouseY > 450 && mouseY < 550) {
-				if (mouseX > 100 && mouseX < 350) {
+				if (mouseX > 200 && mouseX < 450) {
 					changeLevel(1);
 				} else if (mouseX > 750 && mouseX < 1000) {
 					exit();
